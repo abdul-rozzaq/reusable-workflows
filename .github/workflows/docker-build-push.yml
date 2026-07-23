@@ -85,7 +85,7 @@ jobs:
         with:
           to: ${{ secrets.telegram_chat_id }}
           token: ${{ secrets.telegram_bot_token }}
-          format: markdown
+          format: html
           message: |
             ${{ job.status == 'success' && '✅' || '❌' }} *${{ github.repository }}*
             Branch: `${{ github.ref_name }}`
