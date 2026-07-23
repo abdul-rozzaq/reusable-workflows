@@ -1,0 +1,9 @@
+{
+    "name": "Docker Build and Push",
+    "description": "Build and push a Docker image to a container registry and optionally notify Telegram.",
+    "iconName": "docker",
+    "categories": [
+        "CI",
+        "Docker"
+    ]
+}
