@@ -87,8 +87,8 @@ jobs:
           token: ${{ secrets.telegram_bot_token }}
           format: html
           message: |
-            <b>${{ job.status == 'success' && '✅' || '❌' }} ${{ github.repository }}</b><br/>
-            <b>Branch:</b> <code>${{ github.ref_name }}</code><br/>
-            <b>Commit:</b> <code>${{ github.sha }}</code><br/>
-            <b>By:</b> ${{ github.actor }}<br/>
+            <b>${{ job.status == 'success' && '✅' || '❌' }} ${{ github.repository }}</b>
+            <b>Branch:</b> <code>${{ github.ref_name }}</code>
+            <b>Commit:</b> <code>${{ github.sha }}</code>
+            <b>By:</b> ${{ github.actor }}
             ${{ github.event.head_commit.message }}
