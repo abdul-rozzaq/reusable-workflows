@@ -46,6 +46,10 @@ jobs:
     permissions:
       contents: read
 
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.telegram_bot_token }}
+      TELEGRAM_CHAT_ID: ${{ secrets.telegram_chat_id }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -76,7 +80,7 @@ jobs:
             ${{ inputs.registry_name }}/${{ inputs.registry_username }}/${{ inputs.image_name != '' && inputs.image_name || github.event.repository.name }}:${{ github.sha }}
 
       - name: Notify Telegram
-        if: ${{ always() && inputs.notify_telegram == true && secrets.telegram_bot_token != '' && secrets.telegram_chat_id != '' }}
+        if: ${{ always() && inputs.notify_telegram == true && env.TELEGRAM_BOT_TOKEN != '' && env.TELEGRAM_CHAT_ID != '' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.telegram_chat_id }}
