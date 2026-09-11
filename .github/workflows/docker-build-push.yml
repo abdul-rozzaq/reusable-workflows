@@ -22,6 +22,11 @@ on:
         required: false
         type: string
         default: "."
+      dockerfile:
+        description: Path to the Dockerfile (relative to repo root)
+        required: false
+        type: string
+        default: ""
       push_image:
         description: Whether to push the image to the registry
         required: false
@@ -90,6 +95,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ inputs.docker_context }}
+          file: ${{ inputs.dockerfile != '' && inputs.dockerfile || format('{0}/Dockerfile', inputs.docker_context) }}
           push: ${{ inputs.push_image }}
           platforms: linux/amd64
           cache-from: type=gha
