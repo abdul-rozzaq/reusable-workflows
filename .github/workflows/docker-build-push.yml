@@ -27,6 +27,11 @@ on:
         required: false
         type: string
         default: ""
+      build_args:
+        description: Build-time arguments, one KEY=VALUE per line
+        required: false
+        type: string
+        default: ""
       push_image:
         description: Whether to push the image to the registry
         required: false
@@ -96,6 +101,7 @@ jobs:
         with:
           context: ${{ inputs.docker_context }}
           file: ${{ inputs.dockerfile != '' && inputs.dockerfile || format('{0}/Dockerfile', inputs.docker_context) }}
+          build-args: ${{ inputs.build_args }}
           push: ${{ inputs.push_image }}
           platforms: linux/amd64
           cache-from: type=gha
