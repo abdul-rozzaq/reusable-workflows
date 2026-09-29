@@ -115,10 +115,10 @@ jobs:
         run: |
           {
             echo "message<<GHEOF"
-            python3 -c 'import html, os; print(html.escape(os.environ.get("MESSAGE", ""), quote=False))'
+            python3 -c 'import html, os; m = os.environ.get("MESSAGE", "").splitlines(); print(html.escape((m[0] if m else "")[:300], quote=False))'
             echo "GHEOF"
           } >> "$GITHUB_OUTPUT"
-
+          
       - name: Notify Telegram
         if: ${{ always() && inputs.notify_telegram == true && env.TELEGRAM_BOT_TOKEN != '' && env.TELEGRAM_CHAT_ID != '' }}
         uses: appleboy/telegram-action@master
