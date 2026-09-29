@@ -113,12 +113,9 @@ jobs:
         env:
           MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          ESCAPED="${MESSAGE//&/&amp;}"
-          ESCAPED="${ESCAPED//</&lt;}"
-          ESCAPED="${ESCAPED//>/&gt;}"
           {
             echo "message<<GHEOF"
-            echo "$ESCAPED"
+            python3 -c 'import html, os; print(html.escape(os.environ.get("MESSAGE", ""), quote=False))'
             echo "GHEOF"
           } >> "$GITHUB_OUTPUT"
 
