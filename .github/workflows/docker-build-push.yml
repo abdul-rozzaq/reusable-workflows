@@ -107,6 +107,20 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           tags: ${{ steps.meta.outputs.tags }}
+          
+      - name: Escape commit message
+        id: commit
+        env:
+          MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          ESCAPED="${MESSAGE//&/&amp;}"
+          ESCAPED="${ESCAPED//</&lt;}"
+          ESCAPED="${ESCAPED//>/&gt;}"
+          {
+            echo "message<<GHEOF"
+            echo "$ESCAPED"
+            echo "GHEOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Notify Telegram
         if: ${{ always() && inputs.notify_telegram == true && env.TELEGRAM_BOT_TOKEN != '' && env.TELEGRAM_CHAT_ID != '' }}
@@ -120,4 +134,4 @@ jobs:
             <b>Branch:</b> <code>${{ github.ref_name }}</code>
             <b>Commit:</b> <code>${{ github.sha }}</code>
             <b>By:</b> ${{ github.actor }}
-            ${{ github.event.head_commit.message }}
+            ${{ steps.commit.outputs.message }}
