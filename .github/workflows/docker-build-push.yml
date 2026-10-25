@@ -78,6 +78,7 @@ jobs:
           $IMAGE:$SAFE_REF"
           fi
           {
+            echo "image=$IMAGE"
             echo "tags<<EOF"
             echo "$TAGS"
             echo "EOF"
@@ -108,6 +109,43 @@ jobs:
           cache-to: type=gha,mode=max
           tags: ${{ steps.meta.outputs.tags }}
           
+      - name: Write Docker Summary
+        if: always() && !cancelled()
+        env:
+          IMAGE: ${{ steps.meta.outputs.image }}
+          IMAGE_TAGS: ${{ steps.meta.outputs.tags }}
+          PUSH_IMAGE: ${{ inputs.push_image }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          {
+            echo "## 🐳 Docker Build Summary"
+            echo ""
+            echo "| Property | Value |"
+            echo "|---|---|"
+            echo "| Repository | \`${GITHUB_REPOSITORY}\` |"
+            echo "| Image | \`${IMAGE}\` |"
+            echo "| Status | $([ "$JOB_STATUS" = "success" ] && echo '✅ Success' || echo '❌ Failed') |"
+            echo "| Push enabled | \`${PUSH_IMAGE}\` |"
+            echo "| Commit | \`${GITHUB_SHA:0:7}\` |"
+            echo ""
+            echo "### Image tags"
+            echo ""
+
+            while IFS= read -r tag; do
+              [ -n "$tag" ] && echo "- \`$tag\`"
+            done <<< "$IMAGE_TAGS"
+
+            if [ "$PUSH_IMAGE" = "true" ]; then
+              FIRST_TAG=$(printf '%s\n' "$IMAGE_TAGS" | head -n 1)
+              echo ""
+              echo "### Pull command"
+              echo ""
+              echo '```bash'
+              echo "docker pull $FIRST_TAG"
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Escape commit message
         id: commit
         env:
