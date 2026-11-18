@@ -42,6 +42,12 @@ on:
         required: false
         type: boolean
         default: false
+      telegram_topic_id:
+        description: Telegram topic ID (message_thread_id)
+        required: false
+        type: string
+        default: ""
+
     secrets:
       docker_registry_token:
         required: true
@@ -163,6 +169,7 @@ jobs:
         with:
           to: ${{ secrets.telegram_chat_id }}
           token: ${{ secrets.telegram_bot_token }}
+          message_thread_id: ${{ inputs.telegram_topic_id }}
           format: html
           message: |
             <b>${{ job.status == 'success' && '✅' || '❌' }} ${{ github.repository }}</b>
